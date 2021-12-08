@@ -9,6 +9,8 @@ import java.util.stream.IntStream;
 
 public class CinemaService {
 
+    private static final String availableSeat = "S";
+    private static final String soldSeat = "B";
     private final Scanner scanner;
     private final Cinema cinema;
 
@@ -31,12 +33,11 @@ public class CinemaService {
     }
 
     private void createSeats() {
-        final String S = "S";
         String[][] seats = new String[cinema.getRows()][];
 
         for (int i = 0; i < cinema.getRows(); i++) {
             String[] row = new String[cinema.getColumns()];
-            Arrays.fill(row, S);
+            Arrays.fill(row, availableSeat);
             seats[i] = row;
         }
 
@@ -71,8 +72,7 @@ public class CinemaService {
     private void showSeats() {
         System.out.print("Cinema:\n ");
         IntStream.rangeClosed(1, cinema.getSeats()[0].length)
-                .mapToObj(i -> " \t" + i)
-                .forEach(System.out::print);
+                .forEach(i -> System.out.print(" \t" + i));
 
         System.out.println();
 
@@ -80,7 +80,7 @@ public class CinemaService {
         for (String[] seat : cinema.getSeats()) {
             System.out.print(counter);
             for (String s : seat) {
-                System.out.print("\t".concat(s));
+                System.out.printf("\t%s", s);
             }
             System.out.println();
             counter++;
@@ -130,16 +130,15 @@ public class CinemaService {
     }
 
     private void seatValidation(Cinema.Seat seat) throws NonExistingSeatException, AlreadyTakenSeatException {
-        final String B = "B";
-
-        if (seat.row() < 1 || seat.row() > cinema.getRows() || seat.column() < 1 || seat.column() > cinema.getColumns()) {
+        if (seat.row() < 1 || seat.row() > cinema.getRows() ||
+            seat.column() < 1 || seat.column() > cinema.getColumns()) {
             throw new NonExistingSeatException();
         }
 
-        if (cinema.getSeats()[seat.row() - 1][seat.column() - 1].equals(B)) {
+        if (cinema.getSeats()[seat.row() - 1][seat.column() - 1].equals(soldSeat)) {
             throw new AlreadyTakenSeatException();
         } else {
-            cinema.getSeats()[seat.row() - 1][seat.column() - 1] = B;
+            cinema.getSeats()[seat.row() - 1][seat.column() - 1] = soldSeat;
         }
     }
 
