@@ -72,7 +72,7 @@ public class CinemaService {
     private void showSeats() {
         System.out.print("Cinema:\n ");
         IntStream.rangeClosed(1, cinema.getSeats()[0].length)
-                .forEach(i -> System.out.print(" \t" + i));
+                .forEach(i -> System.out.printf(" \t%d", i));
 
         System.out.println();
 
