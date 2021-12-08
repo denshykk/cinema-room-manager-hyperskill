@@ -9,8 +9,8 @@ import java.util.stream.IntStream;
 
 public class CinemaService {
 
-    private static final String availableSeat = "S";
-    private static final String soldSeat = "B";
+    private static final String AVAILABLE_SEAT = "S";
+    private static final String SOLD_SEAT = "B";
     private final Scanner scanner;
     private final Cinema cinema;
 
@@ -37,7 +37,7 @@ public class CinemaService {
 
         for (int i = 0; i < cinema.getRows(); i++) {
             String[] row = new String[cinema.getColumns()];
-            Arrays.fill(row, availableSeat);
+            Arrays.fill(row, AVAILABLE_SEAT);
             seats[i] = row;
         }
 
@@ -70,9 +70,9 @@ public class CinemaService {
     }
 
     private void showSeats() {
-        System.out.print("Cinema:\n ");
+        System.out.print("Cinema:\n");
         IntStream.rangeClosed(1, cinema.getSeats()[0].length)
-                .forEach(i -> System.out.printf(" \t%d", i));
+                .forEach(i -> System.out.printf("\t%d", i));
 
         System.out.println();
 
@@ -135,10 +135,10 @@ public class CinemaService {
             throw new NonExistingSeatException();
         }
 
-        if (cinema.getSeats()[seat.row() - 1][seat.column() - 1].equals(soldSeat)) {
+        if (cinema.getSeats()[seat.row() - 1][seat.column() - 1].equals(SOLD_SEAT)) {
             throw new AlreadyTakenSeatException();
         } else {
-            cinema.getSeats()[seat.row() - 1][seat.column() - 1] = soldSeat;
+            cinema.getSeats()[seat.row() - 1][seat.column() - 1] = SOLD_SEAT;
         }
     }
 
