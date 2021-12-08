@@ -5,19 +5,20 @@ import exception.NonExistingSeatException;
 
 import java.util.Arrays;
 import java.util.Scanner;
+import java.util.stream.IntStream;
 
 public class CinemaService {
 
+    private final Scanner scanner;
     private final Cinema cinema;
 
     public CinemaService() {
+        scanner = new Scanner(System.in);
         cinema = initializeCinema();
         createSeats();
     }
 
     private Cinema initializeCinema() {
-        Scanner scanner = new Scanner(System.in);
-
         System.out.println("Enter the number of rows:");
         int rows = scanner.nextInt();
 
@@ -30,11 +31,12 @@ public class CinemaService {
     }
 
     private void createSeats() {
+        final String S = "S";
         String[][] seats = new String[cinema.getRows()][];
 
         for (int i = 0; i < cinema.getRows(); i++) {
             String[] row = new String[cinema.getColumns()];
-            Arrays.fill(row, "S");
+            Arrays.fill(row, S);
             seats[i] = row;
         }
 
@@ -42,8 +44,6 @@ public class CinemaService {
     }
 
     public void showMenu() {
-        Scanner scanner = new Scanner(System.in);
-
         while (true) {
             System.out.print("""
                     1. Show the seats
@@ -52,29 +52,27 @@ public class CinemaService {
                     0. Exit
                     """);
 
-            String input = scanner.nextLine();
+            String input = scanner.next();
             System.out.println();
 
             switch (input) {
                 case "0" -> {
+                    scanner.close();
                     return;
                 }
                 case "1" -> showSeats();
                 case "2" -> buyTicket();
                 case "3" -> statistics();
-                default -> {
-                    System.out.printf("Unknown menu item - %s\n", input);
-                    showMenu();
-                }
+                default -> System.out.printf("Unknown menu item - %s\n", input);
             }
         }
     }
 
     private void showSeats() {
         System.out.print("Cinema:\n ");
-        for (int i = 1; i <= cinema.getSeats()[0].length; i++) {
-            System.out.print(" " + i);
-        }
+        IntStream.rangeClosed(1, cinema.getSeats()[0].length)
+                .mapToObj(i -> " \t" + i)
+                .forEach(System.out::print);
 
         System.out.println();
 
@@ -82,7 +80,7 @@ public class CinemaService {
         for (String[] seat : cinema.getSeats()) {
             System.out.print(counter);
             for (String s : seat) {
-                System.out.print(" " + s);
+                System.out.print("\t".concat(s));
             }
             System.out.println();
             counter++;
@@ -93,7 +91,8 @@ public class CinemaService {
 
     private void buyTicket() {
         try {
-            Cinema.Seat seat = seatValidation();
+            Cinema.Seat seat = takeSeat();
+            seatValidation(seat);
             int price = getPrice(seat);
 
             cinema.setCurrentIncome(cinema.getCurrentIncome() + price);
@@ -115,13 +114,11 @@ public class CinemaService {
                 Percentage: %s%%
                 Current income: $%d
                 Total income: $%d
-                                      
                 """, cinema.getSoldTickets(), getPercentage(), cinema.getCurrentIncome(), getTotalIncome());
+        System.out.println();
     }
 
-    private Cinema.Seat seatValidation() throws NonExistingSeatException, AlreadyTakenSeatException {
-        Scanner scanner = new Scanner(System.in);
-
+    private Cinema.Seat takeSeat() {
         System.out.println("Enter a row number:");
         int row = scanner.nextInt();
 
@@ -129,18 +126,21 @@ public class CinemaService {
         int column = scanner.nextInt();
 
         System.out.println();
+        return new Cinema.Seat(row, column);
+    }
 
-        if (row < 1 || row > cinema.getRows() || column < 1 || column > cinema.getColumns()) {
+    private void seatValidation(Cinema.Seat seat) throws NonExistingSeatException, AlreadyTakenSeatException {
+        final String B = "B";
+
+        if (seat.row() < 1 || seat.row() > cinema.getRows() || seat.column() < 1 || seat.column() > cinema.getColumns()) {
             throw new NonExistingSeatException();
         }
 
-        if (cinema.getSeats()[row - 1][column - 1].equals("B")) {
+        if (cinema.getSeats()[seat.row() - 1][seat.column() - 1].equals(B)) {
             throw new AlreadyTakenSeatException();
         } else {
-            cinema.getSeats()[row - 1][column - 1] = "B";
+            cinema.getSeats()[seat.row() - 1][seat.column() - 1] = B;
         }
-
-        return new Cinema.Seat(row, column);
     }
 
     private int getTotalSeats() {
@@ -149,7 +149,7 @@ public class CinemaService {
 
     private int getPrice(Cinema.Seat seat) {
         int price;
-        boolean isFrontSide = seat.row <= cinema.getRows() / 2;
+        boolean isFrontSide = seat.row() <= cinema.getRows() / 2;
 
         if (getTotalSeats() <= 60 || isFrontSide) {
             price = 10;

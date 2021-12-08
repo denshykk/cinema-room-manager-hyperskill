@@ -1,6 +1,6 @@
 package service;
 
-public class Cinema {
+class Cinema {
 
     private final int rows;
     private final int columns;
@@ -45,14 +45,6 @@ public class Cinema {
         this.currentIncome = currentIncome;
     }
 
-    static class Seat {
-
-        int row;
-        int columns;
-
-        Seat(int row, int columns) {
-            this.row = row;
-            this.columns = columns;
-        }
+    record Seat(int row, int column) {
     }
 }
