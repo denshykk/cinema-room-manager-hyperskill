@@ -1,4 +1,4 @@
-# Cinema room manager
+# Cinema room manager (Hyperskill project)
 
 -----
 
