@@ -87,14 +87,14 @@ Cinema has been a part of the entertainment industry for a long time: a good mov
 >0. Exit
 >> 1
 >
->Cinema:
->1 2 3 4 5 6
->1 B S S S S S
->2 S S S S S S
->3 S S S S S S
->4 S S S B S S
->5 S S S S S S
->6 S S S S S S
+>Cinema: <br>
+>&nbsp;&nbsp; `1 2 3 4 5 6` <br>
+>`1 B S S S S S` <br>
+>`2 S S S S S S` <br>
+>`3 S S S S S S` <br>
+>`4 S S S B S S` <br>
+>`5 S S S S S S` <br>
+>`6 S S S S S S` <br>
 >
 >1. Show the seats
 >2. Buy a ticket
